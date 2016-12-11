@@ -26,20 +26,28 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_user_home(object):
-    def __init__(self,username,balance):
+    def __init__(self,username,money):
         self.name=username
-        self.money=balance
+        self.balance=money
     def personpage(self):
         self.create_wind = QtGui.QMainWindow()
-        self.ui = Ui_person(self.name,self.money)
-
+        self.update_balance()
+        self.ui = Ui_person(self.name,self.balance)
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
 
+    def update_balance(self):
+        connection = sqlite3.connect('login.db')
+        result = connection.execute("SELECT * FROM USERS")
+        for data in result:
+            if(data[0]==self.name):
+                self.balance=data[2]
+        connection.close()
 
     def buypage(self):
         self.create_wind = QtGui.QMainWindow()
-        self.ui = Ui_buy_page()
+        self.update_balance()
+        self.ui = Ui_buy_page(self.name, self.balance)
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
 
