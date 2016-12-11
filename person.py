@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import sqlite3
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -26,6 +27,55 @@ class Ui_person(object):
     def __init__(self,name,money):
         self.user=name
         self.balance=money
+
+    def setbox(self, title, message):
+        box = QtGui.QMessageBox()
+        box.setIcon(QtGui.QMessageBox.Warning)
+        box.setWindowTitle(title)
+        box.setText(message)
+        box.setStandardButtons(QtGui.QMessageBox.Ok)
+        box.exec_()
+
+#############   Deposit ###########
+    def chargeMoney(self,amount):
+        amount=self.recharge.text()
+        self.balance=self.balance+float(amount)
+        self.changeMoney()
+        self.setbox("Information", "You balance now is " + str(self.balance))
+        self.update_money()
+        print(self.balance)
+
+    def getAmount(self):
+        self.chargeMoney()
+
+
+    def changeMoney(self):
+        connect = sqlite3.connect('login.db')
+        connect.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(self.balance,self.user))
+        connect.commit()
+        connect.close()
+######################################################################################################
+
+###########     Withdraw #########
+    def getMoney(self,amount):
+        amount=self.withdraw.text()
+        money=float(amount)
+        if(money > self.balance):
+            self.setbox("Warning","You don't have enough money in your account")
+        else:
+            self.balance=self.balance-money
+            self.changeMoney()
+            self.setbox("Information","You balance now is " + str(self.balance))
+            self.update_money()
+            print(self.balance)
+
+    def getAmount(self):
+        self.getMoney()
+####################################
+
+    def update_money(self):
+        self.moneyLabel.setText(str(self.balance))
+
 
 
 
@@ -103,14 +153,25 @@ class Ui_person(object):
         self.label_8.setAlignment(QtCore.Qt.AlignCenter)
         self.label_8.setObjectName(_fromUtf8("label_8"))
 
+        # Deposit
         self.rechargeButton = QtGui.QPushButton(self.centralwidget)
-        self.rechargeButton.setGeometry(QtCore.QRect(640, 130, 121, 41))
+        self.rechargeButton.setGeometry(QtCore.QRect(640, 100, 121, 41))
         self.rechargeButton.setObjectName(_fromUtf8("rechargeButton"))
 
         self.recharge = QtGui.QLineEdit(self.centralwidget)
-        self.recharge.setGeometry(QtCore.QRect(430, 130, 191, 41))
+        self.recharge.setGeometry(QtCore.QRect(430, 100, 191, 41))
         self.recharge.setObjectName(_fromUtf8("recharge"))
+        self.rechargeButton.clicked.connect(self.chargeMoney)
 
+        # Withdraw
+        self.withdrawButton = QtGui.QPushButton(self.centralwidget)
+        self.withdrawButton.setGeometry(QtCore.QRect(640, 150, 121, 41))
+        self.withdrawButton.setObjectName(_fromUtf8("withdrawButton"))
+
+        self.withdraw = QtGui.QLineEdit(self.centralwidget)
+        self.withdraw.setGeometry(QtCore.QRect(430, 150, 191, 41))
+        self.withdraw.setObjectName(_fromUtf8("withdraw"))
+        self.withdrawButton.clicked.connect(self.getMoney)
 
 
         self.text = QtGui.QTextEdit(self.centralwidget)
@@ -179,7 +240,8 @@ class Ui_person(object):
         self.Add.setText(_translate("person", "Add", None))
         self.rentAdd.setText(_translate("person", "Add", None))
         self.label_8.setText(_translate("person", "Balance : ", None))
-        self.rechargeButton.setText(_translate("person", "Recharge", None))
+        self.rechargeButton.setText(_translate("person", "Deposit", None))
+        self.withdrawButton.setText(_translate("person", "Withdraw", None))
         self.sentButton.setText(_translate("person", "SENT", None))
         self.label_2.setText(_translate("person", "Sent message to Superuser:", None))
 
