@@ -7,6 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import sqlite3
+from user_home import Ui_user_home
+from set_up import Ui_set_up
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -23,6 +26,27 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_home(object):
+    def login_check(self):
+        username=self.ID.text()
+        password=self.Password.text()
+        connection=sqlite3.connect("login.db")
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND MONEY=0 AND ACTIVATE=1 AND FLAG=0", (username, password))
+        if(len(result.fetchall()) > 0):
+            self.setbox('Information','User found! Go to personal page')
+            self.userwindow = QtGui.QMainWindow()
+            self.userpage = Ui_user_home()
+            self.userpage.setupUi(self.userwindow)
+            self.userwindow.show()
+        else:
+            self.setbox('Warning','User not found, please try again')
+        connection.close()
+    def go_to_account(self):
+        self.createwindow=QtGui.QMainWindow()
+        self.create=Ui_set_up()
+        self.create.setupUi(self.createwindow)
+        self.createwindow.show()
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(800, 600)
