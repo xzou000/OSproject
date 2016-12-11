@@ -12,6 +12,7 @@ from user_home import Ui_user_home
 from set_up import Ui_set_up
 from visit_browse import Ui_Buypage
 from visit_rent import Ui_rent
+from super_user import Ui_super_user
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -46,14 +47,20 @@ class Ui_home(object):
 
 
         if(len(result.fetchall()) > 0):
-            self.setbox('Information','User found! Go to personal page')
-            result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1",(username, password))
-            for data in result1:
-                money = data[2]
-            self.userwindow = QtGui.QMainWindow()
-            self.userpage = Ui_user_home(username,money)
-            self.userpage.setupUi(self.userwindow)
-            self.userwindow.show()
+            if username == 'sample1' and password == '123':
+                self.superuserwindow = QtGui.QMainWindow()
+                self.userpage = Ui_super_user()
+                self.userpage.setupUi(self.superuserwindow)
+                self.superuserwindow.show()
+            else:
+                self.setbox('Information','User found! Go to personal page')
+                result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1",(username, password))
+                for data in result1:
+                    money = data[2]
+                self.userwindow = QtGui.QMainWindow()
+                self.userpage = Ui_user_home(username,money)
+                self.userpage.setupUi(self.userwindow)
+                self.userwindow.show()
         else:
             self.setbox('Warning','User not found, please try again')
         connection.close()
