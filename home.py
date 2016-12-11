@@ -10,6 +10,8 @@ from PyQt4 import QtCore, QtGui
 import sqlite3
 from user_home import Ui_user_home
 from set_up import Ui_set_up
+from visit_browse import Ui_Buypage
+from visit_rent import Ui_rent
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -54,6 +56,17 @@ class Ui_home(object):
         self.create=Ui_set_up()
         self.create.setupUi(self.createwindow)
         self.createwindow.show()
+
+    def visit_buy(self):
+        self.create_vbuy = QtGui.QMainWindow()
+        self.create=Ui_Buypage()
+        self.create.setupUi(self.create_vbuy)
+        self.create_vbuy.show()
+    def visit_rent(self):
+        self.create_vrent = QtGui.QMainWindow()
+        self.create=Ui_rent()
+        self.create.setupUi(self.create_vrent)
+        self.create_vrent.show()
 
 
     def setupUi(self, MainWindow):
@@ -103,12 +116,16 @@ class Ui_home(object):
         font.setPointSize(20)
         self.buy.setFont(font)
         self.buy.setObjectName(_fromUtf8("buy"))
+        self.buy.clicked.connect(self.visit_buy)
+
         self.rent = QtGui.QPushButton(self.centralwidget)
         self.rent.setGeometry(QtCore.QRect(440, 230, 221, 271))
         font = QtGui.QFont()
         font.setPointSize(20)
         self.rent.setFont(font)
         self.rent.setObjectName(_fromUtf8("rent"))
+        self.rent.clicked.connect(self.visit_rent)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -140,4 +157,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

@@ -1,15 +1,11 @@
-__author__ = 'hanguup'
+___author__ = 'hanguup'
 import sqlite3
 
 def account_table():
     connect = sqlite3.connect('login.db')
-    connect.execute("CREATE TABLE USERS(USERNAME TEXT NOT NULL, PASSWORD NOT NULL)")
-    connect.execute("INSERT INTO USERS VALUES(?, ?)", ('superuser', '123'))
+    connect.execute("CREATE TABLE USERS(USERNAME TEXT NOT NULL,PASSWORD NOT NULL, MONEY REAL, ACTIVATE INTEGER, FLAG INTEGER)")
+    connect.execute("INSERT INTO USERS VALUES(?,?,?,?,?)", ('sample1', '123',0,1,0))
     connect.commit()
-    result = connect.execute("SELECT * FROM USERS")
-    for data in result:
-        print('Username: ', data[0])
-        print('Password: ', data[1])
-    connect.close()
 
+    connect.close()
 account_table()

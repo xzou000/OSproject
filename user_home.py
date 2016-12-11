@@ -10,8 +10,7 @@ from PyQt4 import QtCore, QtGui
 from buy_page import Ui_buy_page
 from rent_page import Ui_rent_page
 from person import Ui_person
-from PyQt4 import Qt
-
+import sqlite3
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -28,14 +27,11 @@ except AttributeError:
 
 class Ui_user_home(object):
 
-
     def personpage(self):
         self.create_wind = QtGui.QMainWindow()
         self.ui = Ui_person()
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
-
-
 
 
     def buypage(self):
@@ -103,6 +99,8 @@ class Ui_user_home(object):
         font.setPointSize(20)
         self.user_label.setFont(font)
         self.user_label.setObjectName(_fromUtf8("label3"))
+        connection = sqlite3.connect('login.db')
+       # "result = connection.execute("SELECT * FROM ITEMS WHERE USERNAME = ?",)"
         self.user_label.setText("Username")
 
         self.information = QtGui.QPushButton(self.centralwidget)

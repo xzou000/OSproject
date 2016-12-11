@@ -49,12 +49,24 @@ class Ui_buy_page(object):
         connection.close()
 
     def buy_item(self):
+        target = self.listWidget.currentItem().text()
         connection = sqlite3.connect('itemslist.db')
-        target = self.listWidget.currentItem()
-        print(str(target))
-        mydata = connection.execute("DELETE FROM itemslist WHERE ITEMNAME = ?", (target,))
-        print(mydata)
-
+        result = connection.execute("SELECT * FROM ITEMS")
+        counter = 0
+        index = 0
+        template = ""
+        for item in result:
+            temp_str = 'Seller: ' + item[counter] + ':   Item name:  ' + item[counter+1] + '      Price:  $'+ str(item[counter+2]) + \
+                                          '     Description:  '+ item[counter+3]
+            if temp_str == target:
+                template = item[counter+1]
+                break
+            index += 1
+        print(template)
+        connection.execute("DELETE FROM ITEMS WHERE ITEMNAME = ?", (template,))
+        connection.commit()
+        connection.close()
+        self.put_item_to_list()
 
     def searchitem(self):
         item_name = self.search.text()

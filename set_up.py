@@ -105,11 +105,12 @@ class Ui_set_up(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
 
+
         self.enter = QtGui.QPushButton(self.centralwidget)
         self.enter.setGeometry(QtCore.QRect(280, 370, 151, 41))
         self.enter.setObjectName(_fromUtf8("enter"))
-
         self.enter.clicked.connect(self.create)
+
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -140,4 +141,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

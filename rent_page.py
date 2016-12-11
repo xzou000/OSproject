@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import sqlite3
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -23,6 +24,22 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_rent_page(object):
+
+    def put_item_to_list(self):
+        connection = sqlite3.connect('rentlist.db')
+        result = connection.execute("SELECT * FROM ITEMS")
+        counter = 0
+        index = 0
+        #print(len(result.fetchall()))
+        for item in result:
+            temp_str = 'Seller: ' + item[counter] + ':   Item name:  ' + item[counter+1] + '      Price:  $'+ str(item[counter+2]) + \
+                                          '     Description:  '+ item[counter+3]
+            print(temp_str)
+            item_c = self.listWidget.item(index)
+            item_c.setText(temp_str)
+            index += 1
+        connection.close()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(800, 600)
@@ -49,26 +66,7 @@ class Ui_rent_page(object):
         self.listWidget = QtGui.QListWidget(self.centralwidget)
         self.listWidget.setGeometry(QtCore.QRect(20, 190, 411, 331))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -89,26 +87,7 @@ class Ui_rent_page(object):
         self.label.setText(_translate("MainWindow", "RENT PAGE", None))
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
-        item = self.listWidget.item(0)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(1)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(2)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(3)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(4)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(5)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(6)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(7)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(8)
-        item.setText(_translate("MainWindow", "新建项目", None))
-        item = self.listWidget.item(9)
-        item.setText(_translate("MainWindow", "新建项目", None))
+
         self.listWidget.setSortingEnabled(__sortingEnabled)
 
 
