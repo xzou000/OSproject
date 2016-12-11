@@ -25,9 +25,10 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_person(object):
-    def __init__(self,name,money):
+    def __init__(self,name,money,rate):
         self.user=name
         self.balance=money
+        self.rating=rate
 
     def setbox(self, title, message):
         box = QtGui.QMessageBox()
@@ -279,6 +280,13 @@ class Ui_person(object):
         self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
 
 
+        self.ratingLabel = QtGui.QLabel(self.centralwidget)
+        self.ratingLabel.setGeometry(QtCore.QRect(80, 5, 221, 41))
+        self.ratingLabel.setFont(font)
+        self.ratingLabel.setText("Raitng : "+ str(self.rating))
+        self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+
 
         self.label_2 = QtGui.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(430, 10, 141, 16))
@@ -322,7 +330,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     person = QtGui.QMainWindow()
-    ui = Ui_person('superwealth','100009898000')
+    ui = Ui_person('superwealth','100009898000',5)
     ui.setupUi(person)
     person.show()
     sys.exit(app.exec_())

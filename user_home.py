@@ -26,13 +26,14 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_user_home(object):
-    def __init__(self,username,money):
+    def __init__(self,username,money,rate):
         self.name=username
         self.balance=money
+        self.rating=rate
     def personpage(self):
         self.create_wind = QtGui.QMainWindow()
         self.update_balance()
-        self.ui = Ui_person(self.name,self.balance)
+        self.ui = Ui_person(self.name,self.balance, self.rating)
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
 
