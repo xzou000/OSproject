@@ -24,6 +24,9 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_rent_page(object):
+    def __init__(self,name,money):
+        self.user=name
+        self.balance=money
 
     def setbox(self,title, message):
         box=QtGui.QMessageBox()
@@ -32,6 +35,23 @@ class Ui_rent_page(object):
         box.setText(message)
         box.setStandardButtons(QtGui.QMessageBox.Ok)
         box.exec_()
+
+
+    def changeMoney(self):
+        connect = sqlite3.connect('login.db')
+        connect.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(self.balance,self.user))
+        connect.commit()
+        connect.close()
+
+    def money_from_rent(self,cost):
+        if(cost < self.balance):
+            self.balance=self.balance-cost
+            self.setbox("Information", "You successfully rent the item!")
+            self.changeMoney()
+            self.update_money()
+
+    def update_money(self):
+        self.moneyLabel.setText("Balance: " + str(self.balance))
 
 
     def put_item_to_list(self):
@@ -74,6 +94,7 @@ class Ui_rent_page(object):
                 connection.execute("DELETE FROM RENTITEMS WHERE SELLER = ? AND ITEMNAME = ? AND \
                 PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3],))
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
+                self.money_from_rent(item[counter+2])
                 break
             index += 1
         connection.commit()
@@ -115,6 +136,20 @@ class Ui_rent_page(object):
             item_b = QtGui.QListWidgetItem()
             self.listWidget.addItem(item_b)
 
+        font1 = QtGui.QFont()
+        font1.setPointSize(15)
+
+        self.userLabel = QtGui.QLabel(self.centralwidget)
+        self.userLabel.setGeometry(QtCore.QRect(500, 5, 221, 41))
+        self.userLabel.setFont(font1)
+        self.userLabel.setText("Username: " + self.user)
+        self.userLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.moneyLabel = QtGui.QLabel(self.centralwidget)
+        self.moneyLabel.setGeometry(QtCore.QRect(500, 35, 221, 41))
+        self.moneyLabel.setFont(font1)
+        self.moneyLabel.setText("Balance: " + str(self.balance))
+        self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)

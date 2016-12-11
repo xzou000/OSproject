@@ -53,7 +53,8 @@ class Ui_user_home(object):
 
     def rentpage(self):
         self.create_wind = QtGui.QMainWindow()
-        self.ui = Ui_rent_page()
+        self.update_balance()
+        self.ui = Ui_rent_page(self.name, self.balance)
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
 
