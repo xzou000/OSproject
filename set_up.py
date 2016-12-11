@@ -104,18 +104,13 @@ class Ui_set_up(object):
         font.setPointSize(20)
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
-        self.result = QtGui.QTextEdit(self.centralwidget)
-        self.result.setGeometry(QtCore.QRect(280, 480, 291, 51))
-        self.result.setObjectName(_fromUtf8("result"))
+
         self.enter = QtGui.QPushButton(self.centralwidget)
         self.enter.setGeometry(QtCore.QRect(280, 370, 151, 41))
         self.enter.setObjectName(_fromUtf8("enter"))
 
         self.enter.clicked.connect(self.create)
 
-        self.back = QtGui.QPushButton(self.centralwidget)
-        self.back.setGeometry(QtCore.QRect(470, 370, 101, 41))
-        self.back.setObjectName(_fromUtf8("back"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -133,9 +128,8 @@ class Ui_set_up(object):
         self.label.setText(_translate("MainWindow", "Create your Account", None))
         self.label_2.setText(_translate("MainWindow", "User ID : ", None))
         self.label_3.setText(_translate("MainWindow", "Password : ", None))
-        self.label_4.setText(_translate("MainWindow", "Result : ", None))
         self.enter.setText(_translate("MainWindow", "Create", None))
-        self.back.setText(_translate("MainWindow", "Back", None))
+
 
 
 if __name__ == "__main__":
