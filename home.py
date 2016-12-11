@@ -40,12 +40,18 @@ class Ui_home(object):
     def login_check(self):
         username=self.ID.text()
         password=self.Password.text()
+        money=0
         connection=sqlite3.connect("login.db")
-        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND MONEY=0 AND ACTIVATE=1 AND FLAG=0", (username, password))
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1", (username, password))
+
+
         if(len(result.fetchall()) > 0):
             self.setbox('Information','User found! Go to personal page')
+            result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1",(username, password))
+            for data in result1:
+                money = data[2]
             self.userwindow = QtGui.QMainWindow()
-            self.userpage = Ui_user_home()
+            self.userpage = Ui_user_home(username,money)
             self.userpage.setupUi(self.userwindow)
             self.userwindow.show()
         else:
