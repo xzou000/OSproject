@@ -23,10 +23,28 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_rent(object):
+    def setbox(self,title, message):
+        box=QtGui.QMessageBox()
+        box.setIcon(QtGui.QMessageBox.Warning)
+        box.setWindowTitle(title)
+        box.setText(message)
+        box.setStandardButtons(QtGui.QMessageBox.Ok)
+        box.exec_()
+
+    def searchitem(self):
+        item_name = self.lineEdit.text()
+        connection = sqlite3.connect('rentlist.db')
+        result = connection.execute("SELECT * FROM RENTITEMS WHERE ITEMNAME = ?", (item_name,))
+        #length = len(result.fetchone())
+        if result.fetchone() is None:
+            self.setbox('Item not Found!', 'Please try others')# warning page
+        else:
+            self.setbox("Found", "Your items are in the list.")# change to new page which show login already
+        connection.close()
 
     def put_item_to_list(self):
-        connection = sqlite3.connect('itemslist.db')
-        result = connection.execute("SELECT * FROM ITEMS")
+        connection = sqlite3.connect('rentlist.db')
+        result = connection.execute("SELECT * FROM RENTITEMS")
         counter = 0
         index = 0
         #print(len(result.fetchall()))
@@ -48,14 +66,18 @@ class Ui_rent(object):
         self.lineEdit.setGeometry(QtCore.QRect(80, 99, 431, 31))
         self.lineEdit.setText(_fromUtf8(""))
         self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+
         self.search_Button = QtGui.QPushButton(rent)
         self.search_Button.setGeometry(QtCore.QRect(580, 90, 121, 41))
         self.search_Button.setObjectName(_fromUtf8("search_Button"))
+        self.search_Button.clicked.connect(self.searchitem)
+
+
         self.listWidget = QtGui.QListWidget(rent)
         self.listWidget.setGeometry(QtCore.QRect(80, 190, 521, 331))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         connection = sqlite3.connect('rentlist.db')
-        result = connection.execute("SELECT * FROM ITEMS")
+        result = connection.execute("SELECT * FROM RENTITEMS")
         for items in result:
             item_b = QtGui.QListWidgetItem()
             self.listWidget.addItem(item_b)

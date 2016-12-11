@@ -39,6 +39,15 @@ class Ui_Buypage(object):
             index += 1
         connection.close()
 
+    def searchitem(self):
+        item_name = self.search.text()
+        connection = sqlite3.connect('itemslist.db')
+        result = connection.execute("SELECT * FROM ITEMS WHERE ITEMNAME = ?", (item_name,))
+        if result.fetchone() is None:
+            self.setbox('Item not Found!', 'Please try others')# warning page
+        elif len(result.fetchone()) > 0:
+            self.setbox("Found", "Your items are in the list.")# change to new page which show login already
+        connection.close()
 
 
     def setupUi(self, Buypage):
