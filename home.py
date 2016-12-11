@@ -7,6 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import sqlite3
+from user_home import Ui_user_home
+from set_up import Ui_set_up
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -23,6 +26,36 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_home(object):
+    def setbox(self, title, message):
+        box = QtGui.QMessageBox()
+        box.setIcon(QtGui.QMessageBox.Warning)
+        box.setWindowTitle(title)
+        box.setText(message)
+        box.setStandardButtons(QtGui.QMessageBox.Ok)
+        box.exec_()
+
+
+    def login_check(self):
+        username=self.ID.text()
+        password=self.Password.text()
+        connection=sqlite3.connect("login.db")
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND MONEY=0 AND ACTIVATE=1 AND FLAG=0", (username, password))
+        if(len(result.fetchall()) > 0):
+            self.setbox('Information','User found! Go to personal page')
+            self.userwindow = QtGui.QMainWindow()
+            self.userpage = Ui_user_home()
+            self.userpage.setupUi(self.userwindow)
+            self.userwindow.show()
+        else:
+            self.setbox('Warning','User not found, please try again')
+        connection.close()
+    def go_to_account(self):
+        self.createwindow=QtGui.QMainWindow()
+        self.create=Ui_set_up()
+        self.create.setupUi(self.createwindow)
+        self.createwindow.show()
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(800, 600)
@@ -32,10 +65,10 @@ class Ui_home(object):
         MainWindow.setFont(font)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.ID = QtGui.QTextEdit(self.centralwidget)
+        self.ID = QtGui.QLineEdit(self.centralwidget)
         self.ID.setGeometry(QtCore.QRect(520, 40, 121, 31))
         self.ID.setObjectName(_fromUtf8("ID"))
-        self.Password = QtGui.QTextEdit(self.centralwidget)
+        self.Password = QtGui.QLineEdit(self.centralwidget)
         self.Password.setGeometry(QtCore.QRect(660, 40, 121, 31))
         self.Password.setObjectName(_fromUtf8("Password"))
         self.ID_2 = QtGui.QLabel(self.centralwidget)
@@ -57,9 +90,13 @@ class Ui_home(object):
         self.login = QtGui.QPushButton(self.centralwidget)
         self.login.setGeometry(QtCore.QRect(520, 80, 75, 31))
         self.login.setObjectName(_fromUtf8("login"))
+
+        self.login.clicked.connect(self.login_check)
+
         self.setup = QtGui.QPushButton(self.centralwidget)
         self.setup.setGeometry(QtCore.QRect(660, 80, 75, 31))
         self.setup.setObjectName(_fromUtf8("setup"))
+        self.setup.clicked.connect(self.go_to_account)
         self.buy = QtGui.QPushButton(self.centralwidget)
         self.buy.setGeometry(QtCore.QRect(90, 230, 221, 271))
         font = QtGui.QFont()
