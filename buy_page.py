@@ -37,11 +37,24 @@ class Ui_buy_page(object):
         connection = sqlite3.connect('itemslist.db')
         result = connection.execute("SELECT * FROM ITEMS")
         counter = 0
+        index = 0
+        #print(len(result.fetchall()))
         for item in result:
-            temp_str = 'Item name:  ' + item[counter]+ '      Price:  $' +str(item[counter+1])+ '     Description:  '+item[counter+2]
-            item_c = self.listWidget.item(counter)
+            temp_str = 'Seller: ' + item[counter] + ':   Item name:  ' + item[counter+1] + '      Price:  $'+ str(item[counter+2]) + \
+                                          '     Description:  '+ item[counter+3]
+            print(temp_str)
+            item_c = self.listWidget.item(index)
             item_c.setText(temp_str)
-            counter+=3
+            index += 1
+        connection.close()
+
+    def buy_item(self):
+        connection = sqlite3.connect('itemslist.db')
+        target = self.listWidget.currentItem()
+        print(str(target))
+        mydata = connection.execute("DELETE FROM itemslist WHERE ITEMNAME = ?", (target,))
+        print(mydata)
+
 
     def searchitem(self):
         item_name = self.search.text()
@@ -83,16 +96,18 @@ class Ui_buy_page(object):
         ##create the list in listwidge
         connection = sqlite3.connect('itemslist.db')
         result = connection.execute("SELECT * FROM ITEMS")
-        counter=0
         for items in result:
             item_b = QtGui.QListWidgetItem()
             self.listWidget.addItem(item_b)
-            counter+=1
         #self.listWidget.clicked.connect(self.)
+        #self.listWidget.clicked()
 
         self.buy_Button = QtGui.QPushButton(self.centralwidget)
         self.buy_Button.setGeometry(QtCore.QRect(580, 240, 121, 51))
         self.buy_Button.setObjectName(_fromUtf8("buy_Button"))
+        self.buy_Button.clicked.connect(self.buy_item)
+
+
         self.back_Button = QtGui.QPushButton(self.centralwidget)
         self.back_Button.setGeometry(QtCore.QRect(580, 400, 121, 51))
         self.back_Button.setObjectName(_fromUtf8("back_Button"))
