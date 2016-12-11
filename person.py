@@ -23,6 +23,12 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_person(object):
+    def __init__(self,name,money):
+        self.user=name
+        self.balance=money
+
+
+
     def setupUi(self, person):
         person.setObjectName(_fromUtf8("person"))
         person.resize(800, 600)
@@ -35,6 +41,14 @@ class Ui_person(object):
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName(_fromUtf8("label"))
+
+        self.label_2 = QtGui.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(60, 40, 151, 41))
+
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+
         self.buyItem = QtGui.QTextEdit(self.centralwidget)
         self.buyItem.setGeometry(QtCore.QRect(136, 198, 201, 41))
         self.buyItem.setObjectName(_fromUtf8("buyItem"))
@@ -88,12 +102,17 @@ class Ui_person(object):
         self.label_8.setFont(font)
         self.label_8.setAlignment(QtCore.Qt.AlignCenter)
         self.label_8.setObjectName(_fromUtf8("label_8"))
+
         self.rechargeButton = QtGui.QPushButton(self.centralwidget)
         self.rechargeButton.setGeometry(QtCore.QRect(640, 130, 121, 41))
         self.rechargeButton.setObjectName(_fromUtf8("rechargeButton"))
-        self.recharge = QtGui.QTextEdit(self.centralwidget)
+
+        self.recharge = QtGui.QLineEdit(self.centralwidget)
         self.recharge.setGeometry(QtCore.QRect(430, 130, 191, 41))
         self.recharge.setObjectName(_fromUtf8("recharge"))
+
+
+
         self.text = QtGui.QTextEdit(self.centralwidget)
         self.text.setGeometry(QtCore.QRect(430, 30, 191, 61))
         self.text.setObjectName(_fromUtf8("text"))
@@ -103,6 +122,8 @@ class Ui_person(object):
         self.message = QtGui.QTextEdit(self.centralwidget)
         self.message.setGeometry(QtCore.QRect(550, 270, 211, 121))
         self.message.setObjectName(_fromUtf8("message"))
+
+
         self.username = QtGui.QLabel(self.centralwidget)
         self.username.setGeometry(QtCore.QRect(170, 40, 221, 41))
         font = QtGui.QFont()
@@ -111,6 +132,20 @@ class Ui_person(object):
         self.username.setText(_fromUtf8(""))
         self.username.setAlignment(QtCore.Qt.AlignCenter)
         self.username.setObjectName(_fromUtf8("username"))
+
+        self.userLabel = QtGui.QLabel(self.centralwidget)
+        self.userLabel.setGeometry(QtCore.QRect(100, 40, 221, 41))
+        self.userLabel.setFont(font)
+        self.userLabel.setText(self.user)
+        self.userLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.moneyLabel = QtGui.QLabel(self.centralwidget)
+        self.moneyLabel.setGeometry(QtCore.QRect(100, 100, 221, 41))
+        self.moneyLabel.setFont(font)
+        self.moneyLabel.setText(str(self.balance))
+        self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+
         self.label_11 = QtGui.QLabel(self.centralwidget)
         self.label_11.setGeometry(QtCore.QRect(140, 100, 231, 41))
         font = QtGui.QFont()
@@ -136,7 +171,7 @@ class Ui_person(object):
 
     def retranslateUi(self, person):
         person.setWindowTitle(_translate("person", "Personal Page", None))
-        self.label.setText(_translate("person", "Username : ", None))
+        self.label.setText(_translate("person", "Username : ", self.user))
         self.label_3.setText(_translate("person", "Item : ", None))
         self.label_4.setText(_translate("person", "Price : ", None))
         self.label_5.setText(_translate("person", "Price : ", None))

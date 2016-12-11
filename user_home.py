@@ -26,10 +26,13 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_user_home(object):
-
+    def __init__(self,username,balance):
+        self.name=username
+        self.money=balance
     def personpage(self):
         self.create_wind = QtGui.QMainWindow()
-        self.ui = Ui_person()
+        self.ui = Ui_person(self.name,self.money)
+
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
 
@@ -45,6 +48,8 @@ class Ui_user_home(object):
         self.ui = Ui_rent_page()
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
+
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
@@ -101,12 +106,15 @@ class Ui_user_home(object):
         self.user_label.setObjectName(_fromUtf8("label3"))
         connection = sqlite3.connect('login.db')
        # "result = connection.execute("SELECT * FROM ITEMS WHERE USERNAME = ?",)"
-        self.user_label.setText("Username")
+
+
+        self.user_label.setText(self.name)
 
         self.information = QtGui.QPushButton(self.centralwidget)
         self.information.setGeometry(QtCore.QRect(450, 110, 211, 31))
         self.information.setObjectName(_fromUtf8("information"))
         MainWindow.setCentralWidget(self.centralwidget)
+
         self.information.clicked.connect(self.personpage)
 
 
