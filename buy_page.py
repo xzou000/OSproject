@@ -42,7 +42,7 @@ class Ui_buy_page(object):
         for item in result:
             temp_str = 'Seller: ' + item[counter] + ':   Item name:  ' + item[counter+1] + '      Price:  $'+ str(item[counter+2]) + \
                                           '     Description:  '+ item[counter+3]
-            print(temp_str)
+
             item_c = self.listWidget.item(index)
             item_c.setText(temp_str)
             index += 1
@@ -102,7 +102,7 @@ class Ui_buy_page(object):
         self.search_Button.clicked.connect(self.searchitem)
 
         self.listWidget = QtGui.QListWidget(self.centralwidget)
-        self.listWidget.setGeometry(QtCore.QRect(30, 190, 411, 331))
+        self.listWidget.setGeometry(QtCore.QRect(30, 190, 511, 381))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         ##create the list in listwidge
         connection = sqlite3.connect('itemslist.db')
@@ -119,9 +119,6 @@ class Ui_buy_page(object):
         self.buy_Button.clicked.connect(self.buy_item)
 
 
-        self.back_Button = QtGui.QPushButton(self.centralwidget)
-        self.back_Button.setGeometry(QtCore.QRect(580, 400, 121, 51))
-        self.back_Button.setObjectName(_fromUtf8("back_Button"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -143,7 +140,7 @@ class Ui_buy_page(object):
         self.put_item_to_list()
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.buy_Button.setText(_translate("MainWindow", "BUY", None))
-        self.back_Button.setText(_translate("MainWindow", "BACK", None))
+
 
 
 if __name__ == "__main__":
