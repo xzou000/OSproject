@@ -128,7 +128,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_user_inf('aaa',10000,0)
+    ui = Ui_user_inf('AAA',10000,0)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

@@ -97,18 +97,20 @@ class Ui_buy_page(object):
                     self.setbox("Warning", "You don't have enough money in your account")
                     return
                 connectLogin = sqlite3.connect('login.db')
-
                 getrate = self.getint()
-                if getrate <= 2 and getrate >= 4:
+                print(getrate)
+                if getrate <= 2 or getrate >= 4:
                     result3 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.user,))
                     cur_act = 0
-                    for item in result3:
-                        cur_act = item[3]
+                    for items in result3:
+                        cur_act = items[3]
                     cur_act += 1
                     connectLogin.execute("UPDATE USERS SET ACTIVATE = ? WHERE USERNAME =?", (cur_act, self.user))
-                    if cur_act == 3:
-                        connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
                     connectLogin.commit()
+                    print(cur_act)
+                    if cur_act >= 3:
+                        connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
+                        connectLogin.commit()
                 result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
                 current_balance = 0
                 current_rate = 0
@@ -121,14 +123,19 @@ class Ui_buy_page(object):
                 cur_num_rate += 1
                 current_rate = (current_rate+getrate)/cur_num_rate
                 current_balance+=item[counter+2]
+                print(current_balance)
                 print(cur_num_rate,
                       current_rate)
                 if cur_num_rate>=3 and current_rate <= 2:
                     connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
-                 AND SUSPENDED = ? WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,1, item[counter]))
+                 AND SUSPENDED = ? WHERE USERNAME = ?",(current_balance, current_rate, cur_num_rate,1, item[counter]))
+                    connectLogin.commit()
+                    print('hahah')
                 else:
                     connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
-                 WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,item[counter]))
+                 WHERE USERNAME = ?",(current_balance, current_rate, cur_num_rate,item[counter]))
+                    connectLogin.commit()
+                    print('heheh')
                 connectLogin.commit()
                 connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))

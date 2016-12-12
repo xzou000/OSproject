@@ -43,11 +43,10 @@ class Ui_user_home(object):
 
     def update_balance(self):
         connection = sqlite3.connect('login.db')
-        result = connection.execute("SELECT * FROM USERS")
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.name,))
         for data in result:
-            if(data[0]==self.name):
-                self.balance=data[2]
-
+            self.balance=data[2]
+        connection.close()
 
     def buypage(self):
         self.create_wind = QtGui.QMainWindow()
@@ -155,7 +154,7 @@ if __name__ == "__main__":
 
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_user_home('super',1000000,3,1,1,1)
+    ui = Ui_user_home('AAA',1000000,3,1,1,1)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

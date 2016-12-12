@@ -365,7 +365,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     person = QtGui.QMainWindow()
-    ui = Ui_person('aaa','100009898000',5,0,0,0)
+    ui = Ui_person('aaa',100009898000,5,0,0,0)
     ui.setupUi(person)
     person.show()
     sys.exit(app.exec_())

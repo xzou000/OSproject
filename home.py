@@ -42,7 +42,7 @@ class Ui_home(object):
         username=self.ID.text()
         password=self.Password.text()
         connection=sqlite3.connect("login.db")
-        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1", (username, password))
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?", (username, password,))
         if(len(result.fetchall()) > 0):
             if username == 'sample1' and password == '123':
                 self.superuserwindow = QtGui.QMainWindow()
@@ -51,7 +51,7 @@ class Ui_home(object):
                 self.userwindow.show()
             else:
                 self.setbox('Information','User found! Go to personal page')
-                result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1",(username, password))
+                result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?",(username, password,))
                 for data in result1:
                     money = data[2]
                     rate = data[5]
