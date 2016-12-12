@@ -50,7 +50,7 @@ class Ui_set_up(object):
             elif (len(password) == 0):
                 self.setbox("Warning", "Please enter your password")
                 return
-        connect.execute("INSERT INTO USERS VALUES(?, ?,?,?,?)", (self.name, password,0,1,0))
+        connect.execute("INSERT INTO USERS VALUES(?,?,?,?,?,?,?,?,?,?)", (self.name, password,0,1,0,0,0,0,0,0))
         connect.commit()
         user_message = self.name + '.db'
         connect2 = sqlite3.connect(user_message)

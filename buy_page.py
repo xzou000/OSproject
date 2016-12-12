@@ -27,6 +27,8 @@ class Ui_buy_page(object):
     def __init__(self,name,money):
         self.user=name
         self.balance=money
+
+
     def setbox(self,title, message):
         box=QtGui.QMessageBox()
         box.setIcon(QtGui.QMessageBox.Warning)
@@ -66,6 +68,18 @@ class Ui_buy_page(object):
     def update_money(self):
         self.moneyLabel.setText("Balance: " + str(self.balance))
 
+    def getint(self):
+
+        gui = QtGui.QWidget()
+        text, ok = QtGui.QInputDialog.getInt(gui, "question",
+                                              """Please rate the seller from 1 to 5.""")
+        if ok:
+            if(text < 1 or text > 5):
+                self.getint()
+            return text
+        else:
+            self.setbox("Warning","Please rate the seller from 1 to 5")
+            self.getint()
 
     def buy_item(self):
         target = self.listWidget.currentItem().text()
@@ -83,11 +97,22 @@ class Ui_buy_page(object):
                 if(self.balance < float(item[counter+2])):
                     self.setbox("Warning", "You don't have enough money in your account")
                     return
+                connectLogin = sqlite3.connect('login.db')
+                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+                current_balance = 0
+                for user in result2:
+                    current_balance = user[2]
+                current_balance+=item[counter+2]
+                connectLogin.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(current_balance,item[counter]))
+                connectLogin.commit()
+                connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
                 self.money_from_buy(float(item[counter+2]))
+                self.getint()
                 break
             index += 1
         connection.commit()
+
         connection.close()
 
 
@@ -185,7 +210,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_buy_page('super','1000000')
+    ui = Ui_buy_page('super',1000000)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

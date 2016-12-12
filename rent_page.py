@@ -24,6 +24,9 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_rent_page(object):
+    def __init__(self,name,money):
+        self.user=name
+        self.balance=money
 
     def setbox(self,title, message):
         box=QtGui.QMessageBox()
@@ -33,6 +36,21 @@ class Ui_rent_page(object):
         box.setStandardButtons(QtGui.QMessageBox.Ok)
         box.exec_()
 
+    def changeMoney(self):
+        connect = sqlite3.connect('login.db')
+        connect.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?", (self.balance, self.user))
+        connect.commit()
+        connect.close()
+
+    def money_from_rent(self, cost):
+        if (cost < self.balance):
+            self.balance = self.balance - cost
+            self.setbox("Information", "You successfully rent the item!")
+            self.changeMoney()
+            self.update_money()
+
+    def update_money(self):
+        self.moneyLabel.setText("Balance: " + str(self.balance))
 
     def put_item_to_list(self):
         connection = sqlite3.connect('rentlist.db')
@@ -73,7 +91,17 @@ class Ui_rent_page(object):
             if temp_str == target:
                 connection.execute("DELETE FROM RENTITEMS WHERE SELLER = ? AND ITEMNAME = ? AND \
                 PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3],))
+                connectLogin = sqlite3.connect('login.db')
+                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+                current_balance = 0
+                for user in result2:
+                    current_balance = user[2]
+                current_balance+=item[counter+2]
+                connectLogin.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(current_balance,item[counter]))
+                connectLogin.commit()
+                connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
+                self.money_from_rent(item[counter + 2])
                 break
             index += 1
         connection.commit()
@@ -98,6 +126,22 @@ class Ui_rent_page(object):
         self.rent_Button.setGeometry(QtCore.QRect(570, 240, 121, 51))
         self.rent_Button.setObjectName(_fromUtf8("rent_Button"))
         self.rent_Button.clicked.connect(self.rent_item)
+
+
+        font1 = QtGui.QFont()
+        font1.setPointSize(15)
+
+        self.userLabel = QtGui.QLabel(self.centralwidget)
+        self.userLabel.setGeometry(QtCore.QRect(500, 5, 221, 41))
+        self.userLabel.setFont(font1)
+        self.userLabel.setText("Username: " + self.user)
+        self.userLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.moneyLabel = QtGui.QLabel(self.centralwidget)
+        self.moneyLabel.setGeometry(QtCore.QRect(500, 35, 221, 41))
+        self.moneyLabel.setFont(font1)
+        self.moneyLabel.setText("Balance: " + str(self.balance))
+        self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
 
 
         self.label = QtGui.QLabel(self.centralwidget)
@@ -143,7 +187,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_rent_page()
+    ui = Ui_rent_page('S',30000)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

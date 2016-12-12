@@ -51,7 +51,7 @@ class Ui_home(object):
                 self.superuserwindow = QtGui.QMainWindow()
                 self.userpage = Ui_super_user()
                 self.userpage.setupUi(self.superuserwindow)
-                self.superuserwindow.show()
+                self.userwindow.show()
             else:
                 self.setbox('Information','User found! Go to personal page')
                 result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ? AND ACTIVATE=1",(username, password))
