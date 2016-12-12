@@ -25,10 +25,13 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_person(object):
-    def __init__(self,name,money,rate):
+    def __init__(self,name,money,rating,suspend,rflag,isvip):
         self.user=name
         self.balance=money
-        self.rating=rate
+        self.rate=rating
+        self.suspended=suspend
+        self.flag=rflag
+        self.vip=isvip
 
     def setbox(self, title, message):
         box = QtGui.QMessageBox()
@@ -101,7 +104,13 @@ class Ui_person(object):
         self.setbox('Completed', 'Your item is already placed into renting list!')
 
 
-
+    def sentmessage(self):
+        target = self.text.toPlainText()
+        connection = sqlite3.connect('superuser.db')
+        if target is not None:
+            connection.execute("INSERT INTO USERMESSAGES VALUES(?, ?)",(self.user,target))
+        connection.commit()
+        connection.close()
 
     def setupUi(self, person):
         person.setObjectName(_fromUtf8("person"))
@@ -188,14 +197,21 @@ class Ui_person(object):
         self.text = QtGui.QTextEdit(self.centralwidget)
         self.text.setGeometry(QtCore.QRect(430, 30, 191, 61))
         self.text.setObjectName(_fromUtf8("text"))
+
         self.sentButton = QtGui.QPushButton(self.centralwidget)
         self.sentButton.setGeometry(QtCore.QRect(640, 40, 121, 41))
         self.sentButton.setObjectName(_fromUtf8("sentButton"))
+        self.sentButton.clicked.connect(self.sentmessage)
+
+
         self.message = QtGui.QTextEdit(self.centralwidget)
         self.message.setGeometry(QtCore.QRect(550, 270, 211, 121))
         self.message.setObjectName(_fromUtf8("message"))
-
-
+        connection = sqlite3.connect(self.user+'.db')
+        result = connection.execute("SELECT * FROM MESSAGES")
+        for item in result:
+            self.message.setText(item[0])
+        connection.close()
 
         self.lineEdit = QtGui.QLineEdit(person)
         self.lineEdit.setGeometry(QtCore.QRect(180, 190, 181, 31))
@@ -279,13 +295,32 @@ class Ui_person(object):
         self.moneyLabel.setText(str(self.balance))
         self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-
         self.ratingLabel = QtGui.QLabel(self.centralwidget)
-        self.ratingLabel.setGeometry(QtCore.QRect(80, 5, 221, 41))
+        self.ratingLabel.setGeometry(QtCore.QRect(120, 5, 221, 41))
         self.ratingLabel.setFont(font)
-        self.ratingLabel.setText("Raitng : "+ str(self.rating))
+        self.ratingLabel.setText("Rating: "+str(self.rate))
         self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
 
+        if(self.vip==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(0, 5, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("VIP")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        if(self.suspended==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(550, 420, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("Suspended")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        if(self.flag==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(550, 500, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("Red-Flaged")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
 
 
         self.label_2 = QtGui.QLabel(self.centralwidget)
@@ -330,7 +365,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     person = QtGui.QMainWindow()
-    ui = Ui_person('superwealth','100009898000',5)
+    ui = Ui_person('aaa','100009898000',5,0,0,0)
     ui.setupUi(person)
     person.show()
     sys.exit(app.exec_())
