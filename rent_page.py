@@ -77,6 +77,19 @@ class Ui_rent_page(object):
             self.setbox("Found", "Your items are in the list.")# change to new page which show login already
         connection.close()
 
+    def getint(self):
+
+        gui = QtGui.QWidget()
+        text, ok = QtGui.QInputDialog.getInt(gui, "question",
+                                              """Please rate the seller from 1 to 5.""")
+        if ok:
+            if(text < 1 or text > 5):
+                self.getint()
+            return text
+        else:
+            self.setbox("Warning","Please rate the seller from 1 to 5")
+            self.getint()
+
 
     def rent_item(self):
         target = self.listWidget.currentItem().text()
@@ -91,17 +104,41 @@ class Ui_rent_page(object):
             if temp_str == target:
                 connection.execute("DELETE FROM RENTITEMS WHERE SELLER = ? AND ITEMNAME = ? AND \
                 PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3],))
+                if(self.balance < float(item[counter+2])):
+                    self.setbox("Warning", "You don't have enough money in your account")
+                    return
                 connectLogin = sqlite3.connect('login.db')
                 result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+                getrate = self.getint()
+                if getrate <= 2 and getrate >= 4:
+                    result3 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.user,))
+                    cur_act = 0
+                    for item in result3:
+                        cur_act = item[3]
+                    cur_act += 1
+                    connectLogin.execute("UPDATE USERS SET ACTIVATE = ? WHERE USERNAME =?", (cur_act, self.user))
+                    if cur_act == 3:
+                        connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
                 current_balance = 0
+                current_rate = 0
+                cur_num_rate = 0
                 for user in result2:
                     current_balance = user[2]
+                    current_rate = user[5]
+                    cur_num_rate = user[6]
+                cur_num_rate += 1
+                current_rate = (current_rate+getrate)/cur_num_rate
                 current_balance+=item[counter+2]
-                connectLogin.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(current_balance,item[counter]))
+                if cur_num_rate>=3 and current_rate <= 2:
+                    connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
+                 AND SUSPENDED = ? WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,1, item[counter]))
+                else:
+                    connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
+                 WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,item[counter]))
                 connectLogin.commit()
                 connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
-                self.money_from_rent(item[counter + 2])
+                self.money_from_rent(float(item[counter+2]))
                 break
             index += 1
         connection.commit()

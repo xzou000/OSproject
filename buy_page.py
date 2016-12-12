@@ -93,13 +93,22 @@ class Ui_buy_page(object):
                                           '     Description:  '+ item[counter+3]
             if temp_str == target:
                 connection.execute("DELETE FROM ITEMS WHERE SELLER = ? AND ITEMNAME = ? AND \
-                PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3],))
+                PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3]))
                 if(self.balance < float(item[counter+2])):
                     self.setbox("Warning", "You don't have enough money in your account")
                     return
                 connectLogin = sqlite3.connect('login.db')
                 result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
                 getrate = self.getint()
+                if getrate <= 2 and getrate >= 4:
+                    result3 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.user,))
+                    cur_act = 0
+                    for item in result3:
+                        cur_act = item[3]
+                    cur_act += 1
+                    connectLogin.execute("UPDATE USERS SET ACTIVATE = ? WHERE USERNAME =?", (cur_act, self.user))
+                    if cur_act == 3:
+                        connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
                 current_balance = 0
                 current_rate = 0
                 cur_num_rate = 0
@@ -107,21 +116,25 @@ class Ui_buy_page(object):
                     current_balance = user[2]
                     current_rate = user[5]
                     cur_num_rate = user[6]
+
                 cur_num_rate += 1
                 current_rate = (current_rate+getrate)/cur_num_rate
                 current_balance+=item[counter+2]
-                connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
+                if cur_num_rate>=3 and current_rate <= 2:
+                    connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
+                 AND SUSPENDED = ? WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,1, item[counter]))
+                else:
+                    connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
                  WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,item[counter]))
                 connectLogin.commit()
                 connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
                 self.money_from_buy(float(item[counter+2]))
-
-
                 break
             index += 1
         connection.commit()
         connection.close()
+
 
 
     def searchitem(self):
@@ -218,7 +231,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_buy_page('super',1000000)
+    ui = Ui_buy_page('AAA',1000000)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
