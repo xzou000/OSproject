@@ -109,6 +109,7 @@ class Ui_buy_page(object):
                     connectLogin.execute("UPDATE USERS SET ACTIVATE = ? WHERE USERNAME =?", (cur_act, self.user))
                     if cur_act == 3:
                         connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
+                    connectLogin.commit()
                 current_balance = 0
                 current_rate = 0
                 cur_num_rate = 0

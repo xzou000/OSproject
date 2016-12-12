@@ -25,9 +25,13 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_person(object):
-    def __init__(self,name,money):
+    def __init__(self,name,money,rating,suspend,rflag,isvip):
         self.user=name
         self.balance=money
+        self.rate=rating
+        self.suspended=suspend
+        self.flag=rflag
+        self.vip=isvip
 
     def setbox(self, title, message):
         box = QtGui.QMessageBox()
@@ -291,6 +295,32 @@ class Ui_person(object):
         self.moneyLabel.setText(str(self.balance))
         self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
 
+        self.ratingLabel = QtGui.QLabel(self.centralwidget)
+        self.ratingLabel.setGeometry(QtCore.QRect(120, 5, 221, 41))
+        self.ratingLabel.setFont(font)
+        self.ratingLabel.setText("Rating: "+str(self.rate))
+        self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        if(self.vip==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(0, 5, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("VIP")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        if(self.suspended==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(550, 420, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("Suspended")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        if(self.flag==1):
+            self.ratingLabel = QtGui.QLabel(self.centralwidget)
+            self.ratingLabel.setGeometry(QtCore.QRect(550, 500, 221, 41))
+            self.ratingLabel.setFont(font)
+            self.ratingLabel.setText("Red-Flaged")
+            self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
 
 
         self.label_2 = QtGui.QLabel(self.centralwidget)
@@ -335,7 +365,7 @@ if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     person = QtGui.QMainWindow()
-    ui = Ui_person('aaa','100009898000')
+    ui = Ui_person('aaa','100009898000',5,0,0,0)
     ui.setupUi(person)
     person.show()
     sys.exit(app.exec_())
