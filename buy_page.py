@@ -99,20 +99,28 @@ class Ui_buy_page(object):
                     return
                 connectLogin = sqlite3.connect('login.db')
                 result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+                getrate = self.getint()
                 current_balance = 0
+                current_rate = 0
+                cur_num_rate = 0
                 for user in result2:
                     current_balance = user[2]
+                    current_rate = user[5]
+                    cur_num_rate = user[6]
+                cur_num_rate += 1
+                current_rate = (current_rate+getrate)/cur_num_rate
                 current_balance+=item[counter+2]
-                connectLogin.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(current_balance,item[counter]))
+                connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
+                 WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,item[counter]))
                 connectLogin.commit()
                 connectLogin.close()
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
                 self.money_from_buy(float(item[counter+2]))
-                self.getint()
+
+
                 break
             index += 1
         connection.commit()
-
         connection.close()
 
 
