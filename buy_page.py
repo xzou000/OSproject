@@ -24,7 +24,9 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_buy_page(object):
-
+    def __init__(self,name,money):
+        self.user=name
+        self.balance=money
     def setbox(self,title, message):
         box=QtGui.QMessageBox()
         box.setIcon(QtGui.QMessageBox.Warning)
@@ -42,11 +44,28 @@ class Ui_buy_page(object):
         for item in result:
             temp_str = 'Seller: ' + item[counter] + ':   Item name:  ' + item[counter+1] + '      Price:  $'+ str(item[counter+2]) + \
                                           '     Description:  '+ item[counter+3]
-            print(temp_str)
+
             item_c = self.listWidget.item(index)
             item_c.setText(temp_str)
             index += 1
         connection.close()
+
+    def changeMoney(self):
+        connect = sqlite3.connect('login.db')
+        connect.execute("UPDATE USERS SET MONEY = ? WHERE USERNAME = ?",(self.balance,self.user))
+        connect.commit()
+        connect.close()
+
+    def money_from_buy(self,cost):
+        if(cost < self.balance):
+            self.balance=self.balance-cost
+            self.setbox("Information", "You successfully purchase the item!")
+            self.changeMoney()
+            self.update_money()
+
+    def update_money(self):
+        self.moneyLabel.setText("Balance: " + str(self.balance))
+
 
     def buy_item(self):
         target = self.listWidget.currentItem().text()
@@ -61,7 +80,11 @@ class Ui_buy_page(object):
             if temp_str == target:
                 connection.execute("DELETE FROM ITEMS WHERE SELLER = ? AND ITEMNAME = ? AND \
                 PRICE = ? AND DESCRIPTION = ?", (item[counter], item[counter+1], item[counter+2], item[counter+3],))
+                if(self.balance < float(item[counter+2])):
+                    self.setbox("Warning", "You don't have enough money in your account")
+                    return
                 self.listWidget.takeItem(self.listWidget.row(target_pter))
+                self.money_from_buy(float(item[counter+2]))
                 break
             index += 1
         connection.commit()
@@ -102,7 +125,7 @@ class Ui_buy_page(object):
         self.search_Button.clicked.connect(self.searchitem)
 
         self.listWidget = QtGui.QListWidget(self.centralwidget)
-        self.listWidget.setGeometry(QtCore.QRect(30, 190, 411, 331))
+        self.listWidget.setGeometry(QtCore.QRect(30, 190, 511, 381))
         self.listWidget.setObjectName(_fromUtf8("listWidget"))
         ##create the list in listwidge
         connection = sqlite3.connect('itemslist.db')
@@ -118,10 +141,22 @@ class Ui_buy_page(object):
         self.buy_Button.setObjectName(_fromUtf8("buy_Button"))
         self.buy_Button.clicked.connect(self.buy_item)
 
+        font1 = QtGui.QFont()
+        font1.setPointSize(15)
 
-        self.back_Button = QtGui.QPushButton(self.centralwidget)
-        self.back_Button.setGeometry(QtCore.QRect(580, 400, 121, 51))
-        self.back_Button.setObjectName(_fromUtf8("back_Button"))
+        self.userLabel = QtGui.QLabel(self.centralwidget)
+        self.userLabel.setGeometry(QtCore.QRect(500, 5, 221, 41))
+        self.userLabel.setFont(font1)
+        self.userLabel.setText("Username: " + self.user)
+        self.userLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.moneyLabel = QtGui.QLabel(self.centralwidget)
+        self.moneyLabel.setGeometry(QtCore.QRect(500, 35, 221, 41))
+        self.moneyLabel.setFont(font1)
+        self.moneyLabel.setText("Balance: " + str(self.balance))
+        self.moneyLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
@@ -143,15 +178,14 @@ class Ui_buy_page(object):
         self.put_item_to_list()
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.buy_Button.setText(_translate("MainWindow", "BUY", None))
-        self.back_Button.setText(_translate("MainWindow", "BACK", None))
+
 
 
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
-    ui = Ui_buy_page()
+    ui = Ui_buy_page('super','1000000')
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

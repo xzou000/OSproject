@@ -24,25 +24,6 @@ except AttributeError:
 
 class Ui_Buypage(object):
 
-    def setbox(self,title, message):
-        box=QtGui.QMessageBox()
-        box.setIcon(QtGui.QMessageBox.Warning)
-        box.setWindowTitle(title)
-        box.setText(message)
-        box.setStandardButtons(QtGui.QMessageBox.Ok)
-        box.exec_()
-
-    def searchitem(self):
-        item_name = self.lineEdit.text()
-        connection = sqlite3.connect('itemslist.db')
-        result = connection.execute("SELECT * FROM ITEMS WHERE ITEMNAME = ?", (item_name,))
-        length = len(result.fetchone())
-        if(length > 0):
-            self.setbox("Found", "Your items are in the list.")# change to new page which show login already
-        else:
-            self.setbox('Item not Found!', 'Please try others')# warning page
-        connection.close()
-
     def put_item_to_list(self):
         connection = sqlite3.connect('itemslist.db')
         result = connection.execute("SELECT * FROM ITEMS")
@@ -58,6 +39,15 @@ class Ui_Buypage(object):
             index += 1
         connection.close()
 
+    def searchitem(self):
+        item_name = self.search.text()
+        connection = sqlite3.connect('itemslist.db')
+        result = connection.execute("SELECT * FROM ITEMS WHERE ITEMNAME = ?", (item_name,))
+        if result.fetchone() is None:
+            self.setbox('Item not Found!', 'Please try others')# warning page
+        elif len(result.fetchone()) > 0:
+            self.setbox("Found", "Your items are in the list.")# change to new page which show login already
+        connection.close()
 
 
     def setupUi(self, Buypage):
@@ -75,8 +65,6 @@ class Ui_Buypage(object):
         self.search_Button = QtGui.QPushButton(Buypage)
         self.search_Button.setGeometry(QtCore.QRect(590, 100, 121, 41))
         self.search_Button.setObjectName(_fromUtf8("search_Button"))
-        self.search_Button.clicked.connect(self.searchitem)
-
         self.label = QtGui.QLabel(Buypage)
         self.label.setGeometry(QtCore.QRect(50, 30, 321, 51))
         font = QtGui.QFont()

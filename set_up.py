@@ -9,7 +9,6 @@
 from PyQt4 import QtCore, QtGui
 import sqlite3
 from user_home import Ui_user_home
-
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -35,43 +34,36 @@ class Ui_set_up(object):
 
     def create(self):
         connect = sqlite3.connect('login.db')
-        name=self.user_id.text()
+        self.name=self.user_id.text()
         password=self.password.text()
 
         result = connect.execute("SELECT * FROM USERS")
         for data in result:
             user = data[0]
             word = data[1]
-            if (user==name):
+            if (user==self.name):
                 self.setbox("Warning","Username already exists\nTry again")
                 return
-            elif(word==password):
-                self.setbox("Warning", "Password already exists\nTry again")
-                return
-            elif(len(name)==0):
+            elif(len(self.name)==0):
                 self.setbox("Warning", "Please enter your username")
                 return
             elif (len(password) == 0):
                 self.setbox("Warning", "Please enter your password")
                 return
-        connect.execute("INSERT INTO USERS VALUES(?, ?,?,?,?)", (name, password,0,1,0))
+        connect.execute("INSERT INTO USERS VALUES(?, ?,?,?,?)", (self.name, password,0,1,0))
         connect.commit()
-        self.setbox("Information", "Create account successfully.\nNow go to your personal page")
-        print(name, password)
-        self.go_to_personal_page()
-
+        user_message = self.name + '.db'
+        connect2 = sqlite3.connect(user_message)
+        connect2.execute("CREATE TABLE MESSAGES(MESSAGE TEXT)")
+        self.setbox("Information", "Create account successfully.\nYou can shutdown this window.")
+        print(self.name, password)
+        connect2.close()
         connect.close()
-
-    def go_to_personal_page(self):
-        self.createwindow=QtGui.QMainWindow()
-        self.personal=Ui_user_home()
-        self.personal.setupUi(self.createwindow)
-        self.createwindow.show()
 
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(800, 600)
+        MainWindow.resize(700, 450)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.label = QtGui.QLabel(self.centralwidget)
