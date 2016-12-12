@@ -108,7 +108,7 @@ class Ui_rent_page(object):
                     self.setbox("Warning", "You don't have enough money in your account")
                     return
                 connectLogin = sqlite3.connect('login.db')
-                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+
                 getrate = self.getint()
                 if getrate <= 2 and getrate >= 4:
                     result3 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.user,))
@@ -122,6 +122,7 @@ class Ui_rent_page(object):
                 current_balance = 0
                 current_rate = 0
                 cur_num_rate = 0
+                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
                 for user in result2:
                     current_balance = user[2]
                     current_rate = user[5]

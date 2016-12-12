@@ -28,7 +28,6 @@ class Ui_buy_page(object):
         self.user=name
         self.balance=money
 
-
     def setbox(self,title, message):
         box=QtGui.QMessageBox()
         box.setIcon(QtGui.QMessageBox.Warning)
@@ -98,7 +97,7 @@ class Ui_buy_page(object):
                     self.setbox("Warning", "You don't have enough money in your account")
                     return
                 connectLogin = sqlite3.connect('login.db')
-                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
+
                 getrate = self.getint()
                 if getrate <= 2 and getrate >= 4:
                     result3 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.user,))
@@ -110,6 +109,7 @@ class Ui_buy_page(object):
                     if cur_act == 3:
                         connectLogin.execute("UPDATE USERS SET SUSPENDED = ? WHERE USERNAME =?", (1, self.user))
                     connectLogin.commit()
+                result2 = connectLogin.execute("SELECT * FROM USERS WHERE USERNAME = ?", (item[counter],))
                 current_balance = 0
                 current_rate = 0
                 cur_num_rate = 0
@@ -117,10 +117,12 @@ class Ui_buy_page(object):
                     current_balance = user[2]
                     current_rate = user[5]
                     cur_num_rate = user[6]
-
+                print(current_balance)
                 cur_num_rate += 1
                 current_rate = (current_rate+getrate)/cur_num_rate
                 current_balance+=item[counter+2]
+                print(cur_num_rate,
+                      current_rate)
                 if cur_num_rate>=3 and current_rate <= 2:
                     connectLogin.execute("UPDATE USERS SET MONEY = ? AND RATE = ? AND NUMRATE = ?\
                  AND SUSPENDED = ? WHERE USERNAME = ?",(current_balance,current_rate,cur_num_rate,1, item[counter]))
