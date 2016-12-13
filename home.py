@@ -48,24 +48,31 @@ class Ui_home(object):
                 self.superuserwindow = QtGui.QMainWindow()
                 self.userpage = Ui_super_user()
                 self.userpage.setupUi(self.superuserwindow)
-                self.userwindow.show()
+                self.superuserwindow.show()
             else:
                 self.setbox('Information','User found! Go to personal page')
                 result1 = connection.execute("SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?",(username, password,))
+                money = 0
+                rate = 0
+                vip =0
+                suspend = 0
+                flag = 0
                 for data in result1:
                     money = data[2]
                     rate = data[5]
                     vip = data[9]
                     suspend = data[8]
                     flag = data[4]
+                    print(money, rate, vip, suspend, flag)
 
                 self.userwindow = QtGui.QMainWindow()
-                print(vip)
+                print(money, rate, vip, suspend, flag)
                 self.userpage = Ui_user_home(username,money,rate,suspend,flag,vip)
                 self.userpage.setupUi(self.userwindow)
                 self.userwindow.show()
         else:
             self.setbox('Warning','User not found, please try again')
+
         connection.close()
     def go_to_account(self):
         self.createwindow=QtGui.QMainWindow()

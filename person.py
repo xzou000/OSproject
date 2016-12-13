@@ -28,10 +28,11 @@ class Ui_person(object):
     def __init__(self,name,money,rating,suspend,rflag,isvip):
         self.user=name
         self.balance=money
-        self.rate=rating
+        self.rate=format(rating,'.2f')
         self.suspended=suspend
         self.flag=rflag
         self.vip=isvip
+        print(self.user, self.balance, self.rate, self.suspended)
 
     def setbox(self, title, message):
         box = QtGui.QMessageBox()
@@ -301,7 +302,7 @@ class Ui_person(object):
         self.ratingLabel.setText("Rating: "+str(self.rate))
         self.ratingLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-        if(self.vip==1):
+        if(self.vip==5 and self.balance >= 5000):
             self.ratingLabel = QtGui.QLabel(self.centralwidget)
             self.ratingLabel.setGeometry(QtCore.QRect(0, 5, 221, 41))
             self.ratingLabel.setFont(font)

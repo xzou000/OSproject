@@ -65,6 +65,8 @@ class Ui_Buypage(object):
         self.search_Button = QtGui.QPushButton(Buypage)
         self.search_Button.setGeometry(QtCore.QRect(590, 100, 121, 41))
         self.search_Button.setObjectName(_fromUtf8("search_Button"))
+        self.search_Button.clicked.connect(self.searchitem)
+
         self.label = QtGui.QLabel(Buypage)
         self.label.setGeometry(QtCore.QRect(50, 30, 321, 51))
         font = QtGui.QFont()

@@ -47,11 +47,17 @@ class Ui_super_user(object):
         connection = sqlite3.connect('login.db')
         result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ?", (target,))
         if len(result.fetchall()) > 0:
-            tem1 = ''; tem2 = 0; tem3 = 0
+            username = ''; money = 0; rating = 0; suspend = 0; rflag = 0; isvip = 0; complain = 0
             for item in result:
-                tem1 = item[0]; tem2 = item[2]; tem3 = item[4]
+                username = item[0]
+                money = item[2]
+                rating = item[5]
+                suspend =item[8]
+                rflag = item[4]
+                isvip = item[9]
+                complain = item[7]
             self.user_wind = QtGui.QMainWindow()
-            self.ui = Ui_user_inf(tem1,tem2,tem3)
+            self.ui = Ui_user_inf(username,money,rating,suspend,rflag,isvip, complain)
             self.ui.setupUi(self.user_wind)
             self.user_wind.show()
         else:

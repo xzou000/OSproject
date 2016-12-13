@@ -33,10 +33,12 @@ class Ui_user_home(object):
         self.suspended=suspend
         self.flag=rflag
         self.vip=isvip
+        print(self.name, self. balance, self.rate, self.suspended, self.flag, self.vip)
 
     def personpage(self):
         self.create_wind = QtGui.QMainWindow()
         self.update_balance()
+        self.update_vip()
         self.ui = Ui_person(self.name,self.balance, self.rate, self.suspended, self.flag, self.vip)
         self.ui.setupUi(self.create_wind)
         self.create_wind.show()
@@ -47,6 +49,16 @@ class Ui_user_home(object):
         for data in result:
             self.balance=data[2]
         connection.close()
+
+    def update_vip(self):
+        connection = sqlite3.connect('login.db')
+        result = connection.execute("SELECT * FROM USERS WHERE USERNAME = ?", (self.name,))
+        for data in result:
+            self.vip=data[9]
+        connection.close()
+
+
+
 
     def buypage(self):
         self.create_wind = QtGui.QMainWindow()
